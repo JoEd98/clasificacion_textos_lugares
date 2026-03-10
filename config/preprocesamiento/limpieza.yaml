@@ -1,0 +1,4 @@
+quitar_mayusculas: true
+quitar_ascentos: false
+normalizar_simbolos: true
+quitar_numeros: false

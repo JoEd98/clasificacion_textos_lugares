@@ -1,0 +1,29 @@
+defaults:
+  - data: dataset
+  - preprocesamiento: limpieza
+
+experiment:
+  name: bilstm
+
+procesamiento:
+  max_vocabulary: 20000
+
+hiperparametros:
+  BATCH_SIZE: 32
+  OPTIMIZADOR: 'adamw'
+  ls: 0.0005
+  EPOCAS: 20
+  HIDDEN_DIM: 64
+  DROPOUT: 0.6
+  MAX_VOCAB: 20000
+  TAM_MAXIMO: 100
+
+embeddings:
+  path: ./data/originales/SBW-vectors-300-min5.txt
+
+hydra:
+  run:
+    dir: experiments/${experiment.name}/${now:%Y-%m-%d}/${now:%H-%M-%S}
+
+  job:
+    chdir: true
