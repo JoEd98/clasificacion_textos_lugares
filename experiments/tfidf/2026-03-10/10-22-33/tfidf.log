@@ -1,0 +1,36 @@
+[2026-03-10 10:22:33,659][__main__][INFO] - Configuracion: 
+data:
+  path: ./data/preprocesados/Rest-Mex_2025_train_arreglado.csv
+preprocesamiento:
+  quitar_mayusculas: true
+  quitar_ascentos: false
+  normalizar_simbolos: true
+  quitar_numeros: false
+  balancear_datos: true
+  tam_datos_balanceados: 5441
+experimentos:
+  hiperparametros:
+    k: 1000
+    ngrama_ini: 1
+    ngrama_fin: 1
+    nombre_modelo: svm
+    metodo: tfidf
+  name: tfidf
+
+[2026-03-10 10:22:34,633][__main__][INFO] - Numero de Textos: (27205, 2)
+[2026-03-10 10:23:44,183][__main__][INFO] - Score: 0.5396880631962849
+[2026-03-10 10:23:44,184][__main__][INFO] - Presicion: 0.540548451638921
+[2026-03-10 10:23:44,184][__main__][INFO] - Accuracy: 0.5390553207131042
+[2026-03-10 10:23:44,191][__main__][INFO] - Reporte: 
+               precision    recall  f1-score   support
+
+         0.0       0.66      0.65      0.65      1088
+         1.0       0.43      0.43      0.43      1088
+         2.0       0.47      0.47      0.47      1088
+         3.0       0.47      0.50      0.49      1089
+         4.0       0.67      0.64      0.65      1088
+
+    accuracy                           0.54      5441
+   macro avg       0.54      0.54      0.54      5441
+weighted avg       0.54      0.54      0.54      5441
+

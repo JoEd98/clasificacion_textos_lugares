@@ -1,0 +1,20 @@
+[2026-03-10 10:20:33,595][__main__][INFO] - Configuracion: 
+data:
+  path: ./data/preprocesados/Rest-Mex_2025_train_arreglado.csv
+preprocesamiento:
+  quitar_mayusculas: true
+  quitar_ascentos: false
+  normalizar_simbolos: true
+  quitar_numeros: false
+  balancear_datos: true
+  tam_datos_balanceados: 5441
+experimentos:
+  hiperparametros:
+    k: 1000
+    ngrama_ini: 1
+    ngrama_fin: 1
+    nombre_modelo: svm
+    metodo: tfidf
+  name: tfidf
+
+[2026-03-10 10:20:34,617][__main__][INFO] - Numero de Textos: (27205, 2)
