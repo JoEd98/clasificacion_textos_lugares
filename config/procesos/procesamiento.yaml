@@ -1,0 +1,4 @@
+name: Procesamiento
+
+defaults:
+  - procesamiento: simple

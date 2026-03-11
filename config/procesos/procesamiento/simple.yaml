@@ -1,0 +1,7 @@
+path_data_input: ./data/pre-procesados/preprocesados_balanceados_oversampling.csv
+quitar_mayusculas: true
+quitar_ascentos: false
+normalizar_simbolos: false
+quitar_numeros: false
+lemmatizar: false
+stemming: false

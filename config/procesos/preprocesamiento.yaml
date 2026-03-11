@@ -1,0 +1,4 @@
+name: Pre-procesamieto
+
+defaults:
+  - preprocesamiento: oversampling 

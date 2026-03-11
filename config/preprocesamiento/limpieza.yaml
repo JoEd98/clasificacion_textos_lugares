@@ -1,7 +1,0 @@
-quitar_mayusculas: true
-quitar_ascentos: false
-normalizar_simbolos: true
-quitar_numeros: false
-
-balancear_datos: true 
-tam_datos_balanceados: 5441

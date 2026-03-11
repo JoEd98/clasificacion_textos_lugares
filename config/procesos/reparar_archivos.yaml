@@ -1,0 +1,4 @@
+name: reparar_archivo
+path_input: ./data/originales/Rest-Mex_2025_train.csv
+path_output: ./data/reparados/Rest-Mex_2025_train_reparado_${procesos.numero_renglones}.csv
+numero_renglones : all

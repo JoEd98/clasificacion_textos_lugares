@@ -1,12 +1,10 @@
 defaults:
-  - data: dataset
-  - preprocesamiento: limpieza
-  - experimentos: bilstm
+  - procesos: procesamiento
   - _self_
 
 hydra:
   run:
-    dir: experiments/${experimentos.name}/${now:%Y-%m-%d}/${now:%H-%M-%S}
+    dir: experimentos/procesos/${procesos.name}/${now:%Y-%m-%d}/${now:%H-%M-%S}
 
   job:
     chdir: true

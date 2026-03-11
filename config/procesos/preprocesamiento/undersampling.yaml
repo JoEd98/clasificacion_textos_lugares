@@ -1,0 +1,3 @@
+path_data_input: ./data/reparados/reparados_5.csv
+agregar_datos: false
+balancear_clases: true
