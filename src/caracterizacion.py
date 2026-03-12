@@ -1,13 +1,14 @@
 import pandas as pd
 import pickle
 from collections import Counter
+from pathlib import Path
 
 def codificar_texto(texto, vocabulario):
     tokens = texto.split()
     return len(tokens) , [vocabulario[palabra] for palabra in tokens if palabra in vocabulario]
 
 def main():
-    data_path = './data/procesados/procesados_10_balan_minus_acentos.csv'
+    data_path = './data/procesados/procesados_30_balan_minus_acentos.csv'
     df = pd.read_csv( data_path , encoding='utf-8')
 
     # Procesado y Caracterización
@@ -32,6 +33,10 @@ def main():
         "vocabulario": vocabulario,
         "datos_codificados": datos_codificados
     }
+
+    data_path = "./data/caracterizacion/dataset_codificado.pkl"
+    ruta = Path( data_path )
+    ruta.parent.mkdir(parents=True, exist_ok=True)
 
     with open("./data/caracterizacion/dataset_codificado.pkl", "wb") as f:
         pickle.dump(data, f)

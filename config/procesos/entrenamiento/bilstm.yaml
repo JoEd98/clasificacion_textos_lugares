@@ -1,0 +1,11 @@
+BATCH_SIZE: 32
+OPTIMIZADOR: 'adamw'
+ls: 0.0005
+EPOCAS: 1
+HIDDEN_DIM: 64
+DROPOUT: 0.6
+MAX_VOCAB: 20000
+TAM_MAXIMO: 100
+path_embedding: ./data/matrices_embeddings/matriz_embeddings.pkl
+path_dataset_codificado: ./data/caracterizacion/dataset_codificado.pkl
+path_dataset: ./data/procesados/procesados_30_balan_minus_acentos.csv

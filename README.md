@@ -43,6 +43,8 @@ python .\src\procesamiento.py procesos=procesamiento
 ```
 
 ```bash
-python src/procesamiento.py procesos=procesamiento procesos/procesamiento=simple procesos.procesamiento.quitar_ascentos=true
+python src/procesamiento.py procesos=procesamiento procesos/procesamiento=simple procesos.procesamiento.quitar_ascentos=true procesos.procesamiento.path_data_input=./data/pre-procesados/preprocesados_30_balan.csv
 ```
+### Caracterización
+
 
