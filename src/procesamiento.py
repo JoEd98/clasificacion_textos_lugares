@@ -1,4 +1,5 @@
 import os
+import re
 import hydra 
 import logging 
 import pandas as pd
@@ -89,6 +90,11 @@ def main(cfg: DictConfig):
     }
 
     nombre = "procesados"
+
+    match = re.search(r"preprocesados_(.*?)\.csv$", params.path_data_input)
+    valor = "_" + match.group(1) if match else ""
+
+    nombre += valor
 
     for key, value in config_limpieza.items():
         if value:
