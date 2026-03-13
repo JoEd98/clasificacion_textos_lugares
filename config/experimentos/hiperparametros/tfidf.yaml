@@ -1,5 +1,0 @@
-k : 1000
-ngrama_ini : 1
-ngrama_fin : 1
-nombre_modelo : svm
-metodo : tfidf

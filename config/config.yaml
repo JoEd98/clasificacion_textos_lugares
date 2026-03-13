@@ -5,6 +5,9 @@ defaults:
 hydra:
   run:
     dir: experimentos/procesos/${procesos.name}/${now:%Y-%m-%d}/${now:%H-%M-%S}
+  sweep:
+    dir: experimentos/procesos/${procesos.name}/${now:%Y-%m-%d}/${now:%H-%M-%S}
+    subdir: ${hydra.job.num}
 
   job:
     chdir: true

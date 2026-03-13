@@ -6,6 +6,4 @@ HIDDEN_DIM: 64
 DROPOUT: 0.6
 MAX_VOCAB: 20000
 TAM_MAXIMO: 100
-path_embedding: ./data/matrices_embeddings/matriz_embeddings.pkl
-path_dataset_codificado: ./data/caracterizacion/dataset_codificado.pkl
-path_dataset: ./data/procesados/procesados_30_balan_minus_acentos.csv
+path_input: matriz_embeddings_SBW_all_balan_minus_acentos_simbolos_num.pkl

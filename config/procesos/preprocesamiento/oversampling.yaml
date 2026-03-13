@@ -1,4 +1,4 @@
-path_data_input: ./data/reparados/reparados_5.csv
-path_oversampling_input: ./data/originales/oversampling.csv
+path_data_input: reparados_5.csv
+path_oversampling_input: oversampling.csv
 agregar_datos: true
 balancear_clases: true

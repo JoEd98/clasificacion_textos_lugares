@@ -1,4 +1,0 @@
-defaults:
-  - hiperparametros: tfidf
-
-name: tfidf

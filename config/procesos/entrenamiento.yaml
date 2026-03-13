@@ -1,2 +1,3 @@
+name: entrenamiento
 defaults:
   - entrenamiento : bilstm 

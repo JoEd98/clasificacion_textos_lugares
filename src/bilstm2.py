@@ -10,6 +10,11 @@ from hydra.utils import get_original_cwd
 import hydra 
 from omegaconf import DictConfig 
 import logging
+import os
+import matplotlib.pylab as plt
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, classification_report
+from sklearn.metrics import confusion_matrix
+import seaborn as sns
 
 def pad_secuencias(secuencias, tam_maximo):
     return [seq + [0] * (tam_maximo - len(seq)) if len(seq) < tam_maximo else seq[:tam_maximo] for seq in secuencias]
@@ -30,18 +35,15 @@ def main(cfg: DictConfig):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     logger.info(f"Trabajando con: {device}")
 
-    ruta = Path( cfg.procesos.entrenamiento.path_embedding )
-    with open( ruta , "rb") as f:
-        matrix_w2v = pickle.load(f)
-
-    ruta = Path( cfg.procesos.entrenamiento.path_dataset_codificado )
-    with open( ruta , "rb") as f:
+    project_root = get_original_cwd()
+    data_path = os.path.join(project_root, "./data/matriz_embedding/" , cfg.procesos.entrenamiento.path_input )
+    with open( data_path , "rb") as f:
         data = pickle.load(f)
 
     vocabulario = data["vocabulario"]
     datos_codificados = data["datos_codificados"]
-
-    df = pd.read_csv( cfg.procesos.entrenamiento.path_dataset , encoding='utf-8' )
+    df = data["datos_procesados"]
+    matrix_w2v = data["matrix_w2v"]
 
     weights_matrix = torch.from_numpy(matrix_w2v).float()
     tam_maximo = max(len(seq) for seq in datos_codificados)
@@ -103,29 +105,39 @@ def main(cfg: DictConfig):
     train_losses = []
     val_losses = []
 
-    for epoch in range( cfg.procesos.entrenamiento.EPOCAS ):
+    best_val_loss = float("inf")
+    patience = 5
+    contador_sin_mejora = 0
+
+    for epoch in range(cfg.procesos.entrenamiento.EPOCAS):
+
         model.train()
         total_train_loss = 0
+
         for inputs, labels in train_loader:
-            inputs = inputs.to(device) #GPU
-            labels = labels.to(device) #GPU
+            inputs = inputs.to(device)
+            labels = labels.to(device)
+
             optimizer.zero_grad()
             outputs = model(inputs)
 
             loss = criterion(outputs, labels)
             loss.backward()
             optimizer.step()
+
             total_train_loss += loss.item()
 
         model.eval()
         total_val_loss = 0
+
         with torch.no_grad():
             for inputs, labels in val_loader:
-                inputs = inputs.to(device) #GPU
-                labels = labels.to(device) #GPU
-                outputs = model(inputs)
+                inputs = inputs.to(device)
+                labels = labels.to(device)
 
+                outputs = model(inputs)
                 val_loss_batch = criterion(outputs, labels)
+
                 total_val_loss += val_loss_batch.item()
 
         avg_train_loss = total_train_loss / len(train_loader)
@@ -134,8 +146,80 @@ def main(cfg: DictConfig):
         train_losses.append(avg_train_loss)
         val_losses.append(avg_val_loss)
 
-        # logger.info(f"Época [{epoch+1}/{cfg.procesos.entrenamiento.EPOCAS}] -> Train Loss: {avg_train_loss:.4f} | Val Loss: {avg_val_loss:.4f}")
+        logger.info(
+            f"Época [{epoch+1}/{cfg.procesos.entrenamiento.EPOCAS}] "
+            f"-> Train Loss: {avg_train_loss:.4f} | Val Loss: {avg_val_loss:.4f}"
+        )
 
+        # Early stopping
+        if avg_val_loss < best_val_loss:
+            best_val_loss = avg_val_loss
+            contador_sin_mejora = 0
+
+            # Guardar el mejor modelo
+            torch.save(model.state_dict(), "mejor_modelo.pt")
+
+        else:
+            contador_sin_mejora += 1
+
+        if contador_sin_mejora >= patience:
+            logger.info("Early stopping activado. La validación dejó de mejorar.")
+            break
+
+    ruta = Path("./Graficas/epoca_vs_perdida.png")
+    ruta.parent.mkdir(parents=True, exist_ok=True)
+    plt.figure(figsize=(10, 5))
+    plt.plot( range(cfg.procesos.entrenamiento.EPOCAS) , train_losses, label='Train Loss')
+    plt.plot( range(cfg.procesos.entrenamiento.EPOCAS) , val_losses, label='Val Loss')
+    plt.title('Curvas de Pérdida durante el Entrenamiento')
+    plt.xlabel('Épocas')
+    plt.ylabel('Pérdida')
+    plt.legend()
+    plt.savefig(ruta)
+
+    model.eval()
+
+    y_true = []
+    y_pred = []
+
+    with torch.no_grad():
+        for inputs, labels in test_loader:
+
+            inputs = inputs.to(device)
+            labels = labels.to(device)
+
+            outputs = model(inputs)
+
+            # obtener la clase con mayor probabilidad
+            preds = torch.argmax(outputs, dim=1)
+
+            y_true.extend(labels.cpu().numpy())
+            y_pred.extend(preds.cpu().numpy())
+
+    accuracy = accuracy_score(y_true, y_pred)
+
+    precision = precision_score(y_true, y_pred, average="macro")
+    recall = recall_score(y_true, y_pred, average="macro")
+    f1 = f1_score(y_true, y_pred, average="macro")
+
+    logger.info("\nResultados en Test:")
+    logger.info(f"Accuracy : {accuracy:.4f}")
+    logger.info(f"Precision: {precision:.4f}")
+    logger.info(f"Recall   : {recall:.4f}")
+    logger.info(f"F1 Score : {f1:.4f}")
+
+    logger.info(f"Reporte de clasificación: \n {classification_report(y_true, y_pred)}")
+
+    cm = confusion_matrix(y_true, y_pred)
+
+    ruta = Path("./Graficas/matriz_confusion.png")
+    ruta.parent.mkdir(parents=True, exist_ok=True)
+    plt.figure(figsize=(6,5))
+    sns.heatmap(cm, annot=True, fmt="d", cmap="Blues")
+    plt.xlabel("Predicción")
+    plt.ylabel("Real")
+    plt.title("Matriz de Confusión")
+    plt.savefig(ruta)
 
 if __name__ == "__main__":
     main()

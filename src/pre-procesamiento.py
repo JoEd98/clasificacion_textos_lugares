@@ -19,7 +19,7 @@ def main(cfg: DictConfig):
     #Leer archivo
 
     project_root = get_original_cwd()
-    data_path = os.path.join(project_root, params.path_data_input)
+    data_path = os.path.join(project_root, "./data/reparados/" , params.path_data_input)
     df = pd.read_csv( data_path , encoding='utf-8')
 
     # Extraer columnas importantes
@@ -29,10 +29,16 @@ def main(cfg: DictConfig):
         'clase': df['Polarity']
     })
 
+    print(df["clase"].unique())
+
+    df['clase'] = df['clase'] - 1
+
+    print(df["clase"].unique())
+
     # Agregar nuevos datos
     if params.agregar_datos:
         # project_root = get_original_cwd()
-        data_path = os.path.join(project_root, params.path_oversampling_input)
+        data_path = os.path.join(project_root, "./data/originales/" , params.path_oversampling_input)
         print(data_path)
         df_oversamplig = pd.read_csv( data_path , encoding='utf-8')
         df = pd.concat([ df , df_oversamplig ], ignore_index=True)

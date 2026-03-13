@@ -1,0 +1,4 @@
+name: caracterizacion
+
+data_path_input: procesados_30_balan_minus_acentos.csv
+data_path_embedding: SBW-vectors-300-min5.txt

@@ -1,8 +1,0 @@
-defaults:
-  - /embeddings: sbw
-  - /hiperparametros: bilstm
-
-procesamiento:
-  max_vocabulary: 20000
-
-name: bilstm

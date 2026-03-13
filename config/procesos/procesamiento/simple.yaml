@@ -1,7 +1,8 @@
-path_data_input: ./data/pre-procesados/preprocesados_10.csv
+path_data_input: preprocesados_10.csv
 quitar_mayusculas: true
 quitar_ascentos: false
 normalizar_simbolos: false
 quitar_numeros: false
 lemmatizar: false
 stemming: false
+quitar_palabras_vacias: false

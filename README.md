@@ -20,14 +20,14 @@ python .\src\reparar_archivo.py procesos=reparar_archivos procesos.numero_renglo
 
 Obtener columna de texto y columna clase sin agregar datos y sin balancear clases
 
-```bash
-python .\src\pre-procesamiento.py procesos=preprocesamiento procesos/preprocesamiento=simple
-```
-
 Obtener columna de texto y columna clase sin agregar datos y con balancear clases
 
 ```bash
-python .\src\pre-procesamiento.py procesos=preprocesamiento procesos/preprocesamiento=undersampling procesos.preprocesamiento.path_data_input=./data/reparados/reparados_all.csv
+python .\src\pre-procesamiento.py procesos=preprocesamiento procesos/preprocesamiento=undersampling procesos.preprocesamiento.path_data_input=reparados_all.csv
+```
+
+```bash
+python .\src\pre-procesamiento.py procesos=preprocesamiento procesos/preprocesamiento=simple
 ```
 
 Obtener columna de texto y columna clase agregando datos y balancear clases
@@ -43,8 +43,46 @@ python .\src\procesamiento.py procesos=procesamiento
 ```
 
 ```bash
-python src/procesamiento.py procesos=procesamiento procesos/procesamiento=simple procesos.procesamiento.quitar_ascentos=true procesos.procesamiento.path_data_input=./data/pre-procesados/preprocesados_30_balan.csv
+python src/procesamiento.py procesos=procesamiento procesos/procesamiento=simple procesos.procesamiento.quitar_mayusculas=true procesos.procesamiento.quitar_ascentos=true procesos.procesamiento.normalizar_simbolos=true procesos.procesamiento.quitar_numeros=true procesos.procesamiento.lemmatizar=false procesos.procesamiento.quitar_palabras_vacias=false procesos.procesamiento.path_data_input=preprocesados_all_balan.csv
 ```
+
+```bash
+python src/procesamiento.py --multirun procesos=procesamiento procesos/procesamiento=simple procesos.procesamiento.quitar_mayusculas=true,false procesos.procesamiento.quitar_ascentos=true,false procesos.procesamiento.normalizar_simbolos=true,false procesos.procesamiento.quitar_numeros=true,false procesos.procesamiento.lemmatizar=true,false procesos.procesamiento.quitar_palabras_vacias=true,false procesos.procesamiento.path_data_input=preprocesados_all_balan.csv
+```
+
 ### Caracterización
 
 
+```bash
+python .\src\caracterizacion.py procesos=caracterizacion procesos.data_path=procesados_all_balan_minus_acentos_simbolos_num.csv
+```
+
+```bash
+python .\src\caracterizacion.py procesos=caracterizacion procesos.data_path=procesados_all_balan_acentos_simbolos_num_lemma.csv
+```
+
+```bash
+python .\src\caracterizacion.py procesos=caracterizacion procesos.data_path=procesados_all_balan_minus_simbolos_num_lemma_stem.csv
+```
+
+
+```bash
+python .\src\caracterizacion.py --multirun procesos=caracterizacion procesos.data_path=procesados_all_balan_minus_acentos_simbolos.csv,procesados_all_balan_minus_acentos_simbolos_lemma.csv,procesados_all_balan_minus_acentos_simbolos_lemma_palVac.csv,procesados_all_balan_minus_acentos_simbolos_num.csv,procesados_all_balan_minus_acentos_simbolos_num_lemma.csv,procesados_all_balan_minus_acentos_simbolos_num_lemma_palVac.csv,procesados_all_balan_minus_acentos_simbolos_num_palVac.csv,procesados_all_balan_minus_acentos_simbolos_palVac.csv,procesados_all_balan_minus_simbolos.csv,procesados_all_balan_minus_simbolos_lemma.csv,procesados_all_balan_minus_simbolos_lemma_palVac.csv,procesados_all_balan_minus_simbolos_num.csv,procesados_all_balan_minus_simbolos_num_lemma.csv,procesados_all_balan_minus_simbolos_num_lemma_palVac.csv,procesados_all_balan_minus_simbolos_num_palVac.csv,procesados_all_balan_minus_simbolos_palVac.csv
+```
+
+### Construcción de matriz embeddings
+
+```bash
+python .\src\construccion_matriz_embedding.py procesos=construccion_matriz procesos.data_path_input=dataset_codificado_all_balan_minus_acentos_simbolos_num.pkl procesos.data_path_embedding=SBW-vectors-300-min5.txt
+```
+
+```bash
+python .\src\construccion_matriz_embedding.py procesos=construccion_matriz procesos.data_path_input=dataset_codificado_all_balan_acentos_simbolos_num_lemma.csv procesos.data_path_embedding=SBW-vectors-300-min5.txt
+```
+
+### Entrenamiento 
+
+
+```bash
+python .\src\bilstm2.py procesos=entrenamiento 
+```
