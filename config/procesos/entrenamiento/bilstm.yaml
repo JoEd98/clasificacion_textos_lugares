@@ -1,9 +1,8 @@
-BATCH_SIZE: 32
+BATCH_SIZE: 64
 OPTIMIZADOR: 'adamw'
 ls: 0.0005
-EPOCAS: 1
+EPOCAS: 10
 HIDDEN_DIM: 64
 DROPOUT: 0.6
-MAX_VOCAB: 20000
-TAM_MAXIMO: 100
+TAM_MAXIMO: all
 path_input: matriz_embeddings_SBW_all_balan_minus_acentos_simbolos_num.pkl

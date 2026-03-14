@@ -15,6 +15,7 @@ import matplotlib.pylab as plt
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, classification_report
 from sklearn.metrics import confusion_matrix
 import seaborn as sns
+from omegaconf import OmegaConf
 
 def pad_secuencias(secuencias, tam_maximo):
     return [seq + [0] * (tam_maximo - len(seq)) if len(seq) < tam_maximo else seq[:tam_maximo] for seq in secuencias]
@@ -32,6 +33,8 @@ logger = logging.getLogger(__name__)
 @hydra.main(version_base=None, config_path="../config", config_name="config")
 def main(cfg: DictConfig):
 
+    logger.info("Configuracion: \n" + OmegaConf.to_yaml(cfg))
+
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     logger.info(f"Trabajando con: {device}")
 
@@ -46,22 +49,20 @@ def main(cfg: DictConfig):
     matrix_w2v = data["matrix_w2v"]
 
     weights_matrix = torch.from_numpy(matrix_w2v).float()
-    tam_maximo = max(len(seq) for seq in datos_codificados)
+    tam_maximo = max(len(seq) for seq in datos_codificados) if cfg.procesos.entrenamiento.TAM_MAXIMO == 'all' else cfg.procesos.entrenamiento.TAM_MAXIMO
     padded_datos = pad_secuencias(datos_codificados, tam_maximo )
 
     X = torch.tensor(padded_datos, dtype=torch.long)
     y = torch.tensor(df['clase'].values, dtype=torch.long)
 
-    print( X.shape )
+    logger.info( f"Tamaño de datos: {X.shape}" )
 
     class Dato(Dataset):
         def __init__(self, X, y):
             self.X = X
             self.y = y
-
         def __len__(self):
             return len(self.X)
-
         def __getitem__(self, idx):
             return self.X[idx], self.y[idx]
         
@@ -79,13 +80,10 @@ def main(cfg: DictConfig):
     class ClasificacionTextoBiLSTM(nn.Module):
         def __init__(self, weights_matrix, hidden_dim , dropout_val ):
             super(ClasificacionTextoBiLSTM, self).__init__()
-
             self.embedding = nn.Embedding.from_pretrained(weights_matrix)
             self.embedding.weight.requires_grad = False
-
             self.lstm = nn.LSTM(300, hidden_dim, batch_first=True, bidirectional=True)
             self.fc = nn.Linear(hidden_dim * 2, 5)
-            # self.sigmoid = nn.Sigmoid()
             self.dropout = nn.Dropout(dropout_val)
 
         def forward(self, x):
@@ -94,8 +92,6 @@ def main(cfg: DictConfig):
             cat_hidden = torch.cat((hidden[-2,:,:], hidden[-1,:,:]), dim=1)
             cat_hidden = self.dropout(cat_hidden)
             return self.fc(cat_hidden)
-
-    tam_vocabulario = len(vocabulario) + 1
 
     model = ClasificacionTextoBiLSTM(weights_matrix, cfg.procesos.entrenamiento.HIDDEN_DIM , cfg.procesos.entrenamiento.DROPOUT ).to(device)
 
@@ -169,8 +165,8 @@ def main(cfg: DictConfig):
     ruta = Path("./Graficas/epoca_vs_perdida.png")
     ruta.parent.mkdir(parents=True, exist_ok=True)
     plt.figure(figsize=(10, 5))
-    plt.plot( range(cfg.procesos.entrenamiento.EPOCAS) , train_losses, label='Train Loss')
-    plt.plot( range(cfg.procesos.entrenamiento.EPOCAS) , val_losses, label='Val Loss')
+    plt.plot( train_losses, label='Train Loss')
+    plt.plot( val_losses, label='Val Loss')
     plt.title('Curvas de Pérdida durante el Entrenamiento')
     plt.xlabel('Épocas')
     plt.ylabel('Pérdida')

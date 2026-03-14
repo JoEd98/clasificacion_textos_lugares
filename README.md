@@ -82,7 +82,19 @@ python .\src\construccion_matriz_embedding.py procesos=construccion_matriz proce
 
 ### Entrenamiento 
 
+```bash
+python .\src\bilstm2.py --multirun procesos=entrenamiento procesos.entrenamiento.path_input=
+```
+
 
 ```bash
 python .\src\bilstm2.py procesos=entrenamiento 
+```
+
+```bash
+python .\src\bilstm2.py --multirun procesos=entrenamiento procesos/entrenamiento=bilstm procesos.entrenamiento.EPOCAS=10 procesos.entrenamiento.OPTIMIZADOR=adam,adamw,adamfactor procesos.entrenamiento.ls=0.0004,0.0005,0.0006 procesos.entrenamiento.BATCH_SIZE=32,64 procesos.entrenamiento.HIDDEN_DIM=32,64 procesos.entrenamiento.path_input=
+```
+
+```bash
+python .\src\bilstm2.py --multirun procesos=entrenamiento procesos/entrenamiento=bilstm procesos.entrenamiento.EPOCAS=10 procesos.entrenamiento.OPTIMIZADOR=adamw procesos.entrenamiento.ls=0.002 procesos.entrenamiento.BATCH_SIZE=128 procesos.entrenamiento.HIDDEN_DIM=128 procesos.entrenamiento.DROPOUT=0.6,0.7 procesos.entrenamiento.TAM_MAXIMO=10 procesos.entrenamiento.path_input=matriz_embeddings_SBW_all_balan_minus_acentos_simbolos_num.pkl
 ```
